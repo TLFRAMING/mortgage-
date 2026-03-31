@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mortgage Calculator Canada</title>
+<meta name="description" content="Calculate mortgage payments with amortization and extra payments.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+<style>
+body{background:#0b1220;color:#e5e7eb}
+.result{margin-top:20px;padding:20px;background:#111827;border-radius:12px}
+.ad{background:#1f2937;padding:16px;border-radius:10px;margin:20px 0;text-align:center}
+</style>
+</head>
+
+<body>
+
+<nav class="container-fluid">
+<ul><li><strong>FinanceCalc Canada</strong></li></ul>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="rates.html">Rates</a></li>
+<li><a href="#" role="button">Start</a></li>
+</ul>
+</nav>
+
+<main class="container">
+<div class="grid">
+<section>
+
+<hgroup>
+<h2>Mortgage Calculator</h2>
+<h3>With extra payments & amortization</h3>
+</hgroup>
+
+<div class="ad">💰 Ad Space</div>
+
+<div class="grid">
+<input type="number" id="price" placeholder="Home Price" />
+<input type="number" id="down" placeholder="Down Payment" />
+<input type="number" id="rate" placeholder="Interest %" />
+<input type="number" id="years" placeholder="Years" />
+<input type="number" id="extra" placeholder="Extra Monthly" />
+<button onclick="calc()">Calculate</button>
+</div>
+
+<div class="result" id="summary"></div>
+<div class="result" id="tableBox"></div>
+<button onclick="toggleTable()">Show Full Schedule</button>
+
+<div class="ad">💰 Ad Space</div>
+
+<h3>Compare Rates</h3>
+<a href="rates.html" role="button">View Best Rates</a>
+
+</section>
+</div>
+</main>
+
+<footer class="container">
+<small><a href="#">Privacy</a> • <a href="#">Terms</a></small>
+</footer>
+
+<script>
+let fullTable="",shortTable="",expanded=false;
+
+function calc(){
+let p=price.value, d=down.value, r=rate.value/100/12, y=years.value, extra=+document.getElementById('extra').value||0;
+let loan=p-d, n=y*12;
+let m=loan*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
+
+let balance=loan;
+let full='<table><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>';
+let short=full;
+
+for(let i=1;i<=n;i++){
+let interest=balance*r;
+let principal=(m+extra)-interest;
+balance-=principal;
+if(balance<0) balance=0;
+
+let row=`<tr><td>${i}</td><td>$${(m+extra).toFixed(2)}</td><td>$${principal.toFixed(2)}</td><td>$${interest.toFixed(2)}</td><td>$${balance.toFixed(2)}</td></tr>`;
+
+if(i<=12) short+=row;
+full+=row;
+if(balance<=0) break;
+}
+
+full+="</table>"; short+="</table>";
+fullTable=full; shortTable=short;
+
+tableBox.innerHTML=short;
+summary.innerHTML=`Monthly: $${m.toFixed(2)}`;
+}
+
+function toggleTable(){
+tableBox.innerHTML = expanded ? shortTable : fullTable;
+expanded=!expanded;
+}
+</script>
+
+</body>
+</html>
